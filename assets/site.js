@@ -1,14 +1,22 @@
 'use strict';
 const query = new URLSearchParams(location.search);
-const menu = document.getElementById('menu');
-menu.addEventListener('click', () => {
-  const open = menu.getAttribute('aria-expanded') === 'false';
+const menu = document.getElementById('menuBtn');
+const mobileNav = document.getElementById('mobileNav');
+
+function setMenuOpen(open) {
+  mobileNav.hidden = !open;
   menu.setAttribute('aria-expanded', String(open));
-  document.getElementById('navigation').classList.toggle('open', open);
+  menu.setAttribute('aria-label', open ? 'Đóng menu' : 'Mở menu');
+  menu.querySelector('use').setAttribute('href', open ? '#i-close' : '#i-menu');
+}
+
+menu.addEventListener('click', () => setMenuOpen(mobileNav.hidden));
+mobileNav.addEventListener('click', event => {
+  if (event.target.closest('a')) setMenuOpen(false);
 });
 document.addEventListener('keydown', event => {
-  if (event.key === 'Escape' && menu.getAttribute('aria-expanded') === 'true') {
-    menu.click();
+  if (event.key === 'Escape' && !mobileNav.hidden) {
+    setMenuOpen(false);
     menu.focus();
   }
 });
